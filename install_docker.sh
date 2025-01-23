@@ -6,7 +6,7 @@ sudo apt-get update -y
 
 # Install dependencies required for Docker installation
 echo "Installing required dependencies..."
-sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common jq
 
 # Add Docker's official GPG key
 echo "Adding Docker's official GPG key..."
@@ -17,7 +17,7 @@ echo "Setting up Docker repository..."
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 # Update the package database again with Docker's repository
-echo "Updating package database..."
+echo "Updating package database with Docker repository..."
 sudo apt-get update -y
 
 # Install Docker Engine
@@ -35,7 +35,8 @@ sudo docker --version
 
 # Install Docker Compose (latest stable version)
 echo "Installing Docker Compose..."
-sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+DOCKER_COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)
+sudo curl -L "https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
 # Apply executable permissions to Docker Compose
 echo "Setting permissions for Docker Compose..."
